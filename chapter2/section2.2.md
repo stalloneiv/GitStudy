@@ -16,7 +16,9 @@
 要查看哪些文件处于什么状态，可以用 git status 命令。 如果在克隆仓库后立即使用此命令，会看到类似这样的输出：
 
 `$ git status`
+
 `On branch master`
+
 `nothing to commit, working directory clean`
 
 这说明你现在的工作目录相当干净。
@@ -28,11 +30,17 @@
 
 现在，让我们在项目下创建一个新的 README 文件。 如果之前并不存在这个文件，使用 git status 命令，你将看到一个新的未跟踪文件：
 `$ echo 'My Project' > README`
+
 `$ git status`
+
 `On branch master`
+
 `Untracked files:``
+
   `(use "git add <file>..." to include in what will be committed)``
+
     `README`
+
 `nothing added to commit but untracked files present (use "git add" to track)`
 
 在状态报告中可以看到新建的 README 文件出现在 Untracked files 下面。
@@ -44,9 +52,14 @@
 
 此时再运行 git status 命令，会看到 README 文件已被跟踪，并处于暂存状态：
 `$ git status`
+
 `On branch master`
+
+
 `Changes to be committed:`
+
   `(use "git reset HEAD <file>..." to unstage)`
+
     `new file:   README`
 
 只要在 Changes to be committed 这行下面的，就说明是已暂存状态。
@@ -57,13 +70,21 @@
 ### 暂存已修改文件
 现在我们来修改一个已被跟踪的文件。 如果你修改了一个名为 CONTRIBUTING.md 的已被跟踪的文件，然后运行 git status 命令，会看到下面内容：
 `$ git status`
+
 `On branch master`
-`Changes to be committed:``
+
+`Changes to be committed:`
+
   `(use "git reset HEAD <file>..." to unstage)`
+
     `new file:   README`
-`Changes not staged for commit:``
+
+`Changes not staged for commit:`
+
   `(use "git add <file>..." to update what will be committed)`
+
 `(use "git checkout -- <file>..." to discard changes in working directory)`
+
     `modified:   CONTRIBUTING.md`
 
 文件 CONTRIBUTING.md 出现在 Changes not staged for commit 这行下面，说明已跟踪文件的内容发生了变化，但还没有放到暂存区。
@@ -76,11 +97,17 @@
 **将这个命令理解为“添加内容到下一次提交中”而不是“将一个文件添加到项目中”要更加合适。**
 现在让我们运行 git add 将"CONTRIBUTING.md"放到暂存区，然后再看看 git status 的输出：
 `$ git add CONTRIBUTING.md`
+
 `$ git status`
+
 `On branch master`
+
 `Changes to be committed:`
+
   `(use "git reset HEAD <file>..." to unstage)`
+
     `new file:   README`
+
     `modified:   CONTRIBUTING.md`
 
 现在两个文件都已暂存，下次提交时就会一并记录到仓库。 假设此时，你想要在 CONTRIBUTING.md 里再加条注释， 重新编辑存盘后，准备好提交。 不过且慢，再运行 git status 你会发现：现在 CONTRIBUTING.md 文件同时出现在暂存区和非暂存区。 这怎么可能呢？ 好吧，实际上 Git 只不过暂存了你运行 git add 命令时的版本， 如果你现在提交，CONTRIBUTING.md 的版本是你最后一次运行 git add 命令时的那个版本，而不是你运行 git commit 时，在工作目录中的当前版本。
@@ -90,10 +117,15 @@
 git status 命令的输出十分详细，但其用语有些繁琐。 如果你使用 git status -s 命令或 git status --short 命令，你将得到一种更为紧凑的格式输出。 运行 git status -s ，状态报告输出如下：
 
 `$ git status -s`
+
  `M README`
+
 `MM Rakefile`
+
 `A  lib/git.rb`
+
 `M  lib/simplegit.rb`
+
 `?? LICENSE.txt`
 
 ### 告诉Git哪些文件需要忽略
@@ -107,7 +139,9 @@ git status 命令的输出十分详细，但其用语有些繁琐。 如果你�
 在这种情况下，我们可以创建一个名为 .gitignore 的文件，列出要忽略的文件模式。 来看一个实际的例子：
 
 `$ cat .gitignore`
+
 `*.[oa]`
+
 `*~`
 
 第一行告诉 Git 忽略所有以 .o 或 .a 结尾的文件。一般这类对象文件和存档文件都是编译过程中出现的。
@@ -137,29 +171,50 @@ git status 命令的输出十分详细，但其用语有些繁琐。 如果你�
 
 假如再次修改 README 文件后暂存，然后编辑 CONTRIBUTING.md 文件后先不暂存， 运行 status 命令将会看到：
 `$ git status`
+
 `On branch master`
-`Changes to be committed:``
+
+`Changes to be committed:`
+
 `(use "git reset HEAD <file>..." to unstage)`
+
 `modified:   README`
-`Changes not staged for commit:
+
+`Changes not staged for commit:`
+
 `(use "git add <file>..." to update what will be committed)`
+
 `(use "git checkout -- <file>..." to discard changes in working directory)`
+
   `modified:   CONTRIBUTING.md`
 
 要查看尚未暂存的文件更新了哪些部分，不加参数直接输入 git diff：
 `$ git diff`
+
 `diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md`
+
 `index 8ebb991..643e24f 100644`
+
 `--- a/CONTRIBUTING.md`
+
 `+++ b/CONTRIBUTING.md`
+
 `@@ -65,7 +65,8 @@ branch directly, things can get messy.`
+
  `Please include a nice description of your changes when you submit your PR;`
+
  `if we have to read the whole diff to figure out why you're contributing`
+
  `in the first place, you're less likely to get feedback and have your change`
+
 `-merged in.`
+
 `+merged in. Also, split your changes into comprehensive chunks if your patch is`
+
 `+longer than a dozen lines.`
+
  `If you are starting to work on a particular area, feel free to submit a PR`
+
  `that highlights your work in progress (and note in the PR title that it's`
 
 ### 提交更新
@@ -173,8 +228,11 @@ git status 命令的输出十分详细，但其用语有些繁琐。 如果你�
 
 另外，你也可以在 commit 命令后添加 -m 选项，将提交信息与命令放在同一行，如下所示：
 `$ git commit -m "Story 182: Fix benchmarks for speed"`
+
 `[master 463dc4f] Story 182: Fix benchmarks for speed`
+
  `2 files changed, 2 insertions(+)`
+
 ` create mode 100644 README`
 好，现在你已经创建了第一个提交！ 可以看到，提交后它会告诉你，当前是在哪个分支（master）提交的，本次提交的完整 SHA-1 校验和是什么（463dc4f），以及在本次提交中，有多少文件修订过，多少行添加和删改过。
 
@@ -184,16 +242,23 @@ git status 命令的输出十分详细，但其用语有些繁琐。 如果你�
 ### 跳过使用暂存区域
 尽管使用暂存区域的方式可以精心准备要提交的细节，但有时候这么做略显繁琐。 Git 提供了一个跳过使用暂存区域的方式， 只要在提交的时候，给 git commit 加上 -a 选项，Git 就会自动把所有已经跟踪过的文件暂存起来一并提交，从而跳过 git add 步骤：
 `$ git status`
+
 `On branch master`
+
 `Changes not staged for commit:`
+
   `(use "git add <file>..." to update what will be committed)`
+
   `(use "git checkout -- <file>..." to discard changes in working directory)`
 
   `  modified:   CONTRIBUTING.md`
 
 `no changes added to commit (use "git add" and/or "git commit -a")`
+
 `$ git commit -a -m 'added new benchmarks'`
+
 `[master 83e38c7] added new benchmarks`
+
 ` 1 file changed, 5 insertions(+), 0 deletions(-)`
 
 ### 移除文件
