@@ -15,7 +15,7 @@
     * [2.2 记录每次本地更新并同步到远程主机上的仓库](chapter2/section2.2.md)
     * [2.3 查看提交历史](chapter2/section2.3.md)
     * [2.4 撤销操作](chapter2/section2.4.md)
-    * [2.5 过程主机仓库的使用](chapter2/section2.5.md)
+    * [2.5 远程主机仓库的使用](chapter2/section2.5.md)
     * [2.6 关于标签](chapter2/section2.6.md)
     * [2.7 Git别名](chapter2/section2.7.md)
     * [2.8 总结](chapter2/section2.8.md)
@@ -27,4 +27,3 @@
     * [3.5 远程主机上的分支](chapter3/section3.5.md)
     * [3.6 重新设立分支起点](chapter3/section3.6.md)
     * [3.7 总结](chapter3/section3.7.md)
-
