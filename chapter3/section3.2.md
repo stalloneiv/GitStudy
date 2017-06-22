@@ -61,3 +61,67 @@
      1 file changed, 2 insertions(+)
 
 ![enter image description here](https://git-scm.com/book/en/v2/images/basic-branching-4.png)
+
+### 基于 master 分支的紧急问题分支 hotfix branch
+你可以运行你的测试，确保你的修改是正确的，然后将其合并回你的 master 分支来部署到线上。 你可以使用 git merge 命令来达到上述目的：
+
+    $ git checkout master
+    $ git merge hotfix
+    Updating f42c576..3a0874c
+    Fast-forward
+    index.html | 2 ++
+    1 file changed, 2 insertions(+)
+
+在合并的时候，你应该注意到了"快进（fast-forward）"这个词。 由于当前 master 分支所指向的提交是你当前提交（有关 hotfix 的提交）的直接上游，所以 Git 只是简单的将指针向前移动。
+**换句话说，当你试图合并两个分支时，如果顺着一个分支走下去能够到达另一个分支，那么 Git 在合并两者的时候，只会简单的将指针向前推进（指针右移），因为这种情况下的合并操作没有需要解决的分歧——这就叫做 “快进（fast-forward）”**。
+
+  现在，最新的修改已经在 master 分支所指向的提交快照中，你可以着手发布该修复了。
+  ![enter image description here](https://git-scm.com/book/en/v2/images/basic-branching-5.png)
+
+  ### master 被快进到 hotfix
+关于这个紧急问题的解决方案发布之后，你准备回到被打断之前时的工作中。 然而，你应该先删除 hotfix 分支，因为你已经不再需要它了 —— master 分支已经指向了同一个位置。 你可以使用带 -d 选项的 git branch 命令来删除分支：
+
+    $ git branch -d hotfix
+    Deleted branch hotfix (3a0874c).
+
+  现在你可以切换回你正在工作的分支继续你的工作，也就是针对 #53 问题的那个分支（iss53 分支）。
+
+    $ git checkout iss53
+    Switched to branch "iss53"
+    $ vim index.html
+    $ git commit -a -m 'finished the new footer [issue 53]'
+    [iss53 ad82d7a] finished the new footer [issue 53]
+    1 file changed, 1 insertion(+)
+
+  ![enter image description here](https://git-scm.com/book/en/v2/images/basic-branching-6.png)
+
+### 继续在 iss53 分支上的工作
+你在 hotfix 分支上所做的工作并没有包含到 iss53 分支中。 如果你需要拉取 hotfix 所做的修改，你可以使用 git merge master 命令将 master 分支合并入 iss53 分支，或者你也可以等到 iss53 分支完成其使命，再将其合并回 master 分支。
+
+### 分支的合并
+假设你已经修正了 #53 问题，并且打算将你的工作合并入 master 分支。 为此，你需要合并 iss53 分支到 master 分支，这和之前你合并 hotfix 分支所做的工作差不多。 你只需要检出到你想合并入的分支，然后运行 git merge 命令：
+
+    $ git checkout master
+    Switched to branch 'master'
+    $ git merge iss53
+    Merge made by the 'recursive' strategy.
+    index.html |    1 +
+    1 file changed, 1 insertion(+)
+
+  这和你之前合并 hotfix 分支的时候看起来有一点不一样。 在这种情况下，你的开发历史从一个更早的地方开始分叉开来（diverged）。 因为，master 分支所在提交并不是 iss53 分支所在提交的直接祖先，Git 不得不做一些额外的工作。 出现这种情况的时候，Git 会使用两个分支的末端所指的快照（C4 和 C5）以及这两个分支的工作祖先（C2），做一个简单的三方合并。
+
+  ![enter image description here](https://git-scm.com/book/en/v2/images/basic-merging-1.png)
+
+### 一次典型合并中所用到的三个快照
+和之前将分支指针向前推进所不同的是，Git 将此次三方合并的结果做了一个新的快照并且自动创建一个新的提交指向它。 这个被称作一次合并提交，它的特别之处在于他有不止一个父提交。
+
+![enter image description here](https://git-scm.com/book/en/v2/images/basic-merging-2.png)
+
+### 一个合并提交
+需要指出的是，Git 会自行决定选取哪一个提交作为最优的共同祖先，并以此作为合并的基础；这和更加古老的 CVS 系统或者 Subversion （1.5 版本之前）不同，在这些古老的版本管理系统中，用户需要自己选择最佳的合并基础。 Git 的这个优势使其在合并操作上比其他系统要简单很多。
+
+既然你的修改已经合并进来了，你已经不再需要 iss53 分支了。 现在你可以在任务追踪系统中关闭此项任务，并删除这个分支。
+`$ git branch -d iss53`
+
+### 遇到冲突时的分支合并
+有时候合并操作不会如此顺利。 如果你在两个不同的分支中，对同一个文件的同一个部分进行了不同的修改，Git 就没法干净的合并它们。 如果你对 #53 问题的修改和有关 hotfix 的修改都涉及到同一个文件的同一处，在合并它们的时候就会产生合并冲突：
